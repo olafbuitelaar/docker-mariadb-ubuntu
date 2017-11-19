@@ -1,7 +1,7 @@
 MariaDB with LZ4 compression
 ==================
 
-Based on the [official MariaDB image](https://registry.hub.docker.com/_/mariadb/) but build on Ubuntu 17.10 which includes LZ4 compression.
+Based on the [official MariaDB image](https://registry.hub.docker.com/_/mariadb/) but build on Ubuntu 17.10 which includes LZ4 compression. It also includes the mariadb-backup package.
 
 See the official image for usage documentation.
 

@@ -95,6 +95,7 @@ RUN { \
 		"mariadb-server=$MARIADB_VERSION" \
 # percona-xtrabackup is installed at the same time so that `mysql-common` is only installed once from just mariadb repos
 		percona-xtrabackup \
+		mariadb-backup-$MARIADB_MAJOR \
 		socat \
 		tzdata \
 	&& rm -rf /var/lib/apt/lists/* \
