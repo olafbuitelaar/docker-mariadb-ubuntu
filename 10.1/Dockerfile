@@ -98,6 +98,8 @@ RUN { \
 		mariadb-backup-$MARIADB_MAJOR \
 		socat \
 		tzdata \
+		pigz \
+		p7zip-full \
 	&& rm -rf /var/lib/apt/lists/* \
 # comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
 	&& sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/* \
