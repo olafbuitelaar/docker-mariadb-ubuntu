@@ -100,6 +100,7 @@ RUN { \
 		tzdata \
                 pigz \
                 p7zip-full \
+		liblz4-tool \
 	&& rm -rf /var/lib/apt/lists/* \
 # comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
 	&& sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/* \
