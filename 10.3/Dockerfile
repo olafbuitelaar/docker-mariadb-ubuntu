@@ -65,7 +65,7 @@ RUN set -ex; \
 	apt-key list
 
 # add Percona's repo for xtrabackup (which is useful for Galera)
-RUN echo "deb https://repo.percona.com/apt zesty main" > /etc/apt/sources.list.d/percona.list \
+RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.d/percona.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=Percona Development Team'; \
@@ -75,7 +75,7 @@ RUN echo "deb https://repo.percona.com/apt zesty main" > /etc/apt/sources.list.d
 ENV MARIADB_MAJOR 10.3
 ENV MARIADB_VERSION 10.3.3+maria~artful
 
-RUN echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu zesty main" > /etc/apt/sources.list.d/mariadb.list \
+RUN echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu artful main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
