@@ -73,9 +73,9 @@ RUN echo "deb https://repo.percona.com/apt zesty main" > /etc/apt/sources.list.d
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.2
-ENV MARIADB_VERSION 10.2.12+maria~artful
+ENV MARIADB_VERSION 10.2.12+maria~zesty
 
-RUN echo "deb http://ftp.osuosl.org/pub/mariadb/repo/$MARIADB_MAJOR/ubuntu artful main" > /etc/apt/sources.list.d/mariadb.list \
+RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu zesty main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
@@ -96,11 +96,13 @@ RUN { \
 # percona-xtrabackup is installed at the same time so that `mysql-common` is only installed once from just mariadb repos
 		percona-xtrabackup-24 \
 		mariadb-backup-$MARIADB_MAJOR \
+		"mariadb-plugin-rocksdb=$MARIADB_VERSION" \
 		socat \
 		tzdata \
                 pigz \
                 p7zip-full \
 		liblz4-tool \
+		bzip2 \
 	&& rm -rf /var/lib/apt/lists/* \
 # comment out any "user" entires in the MySQL config ("docker-entrypoint.sh" or "--user" will handle user switching)
 	&& sed -ri 's/^user\s/#&/' /etc/mysql/my.cnf /etc/mysql/conf.d/* \
