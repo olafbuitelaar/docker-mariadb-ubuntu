@@ -96,7 +96,7 @@ RUN { \
 # percona-xtrabackup is installed at the same time so that `mysql-common` is only installed once from just mariadb repos
 		percona-xtrabackup-24 \
 		mariadb-backup-$MARIADB_MAJOR \
-		"mariadb-plugin-rocksdb==$MARIADB_VERSION" \
+		"mariadb-plugin-rocksdb=$MARIADB_VERSION" \
 		socat \
 		tzdata \
                 pigz \
