@@ -173,7 +173,7 @@ if [ "$1" = 'mysqld' -a -z "$wantHelp" ]; then
 				*.sql)     echo "$0: running $f"; "${mysql[@]}" < "$f"; echo ;;
 				*.sql.gz)  echo "$0: running $f"; pigz -c "$f" | "${mysql[@]}"; echo ;;
 				*.sql.7z)  echo "$0: running $f"; 7z e "$f" -so | "${mysql[@]}"; echo ;;
-				*.sql.lz4) echo "$0: running $f"; lz4 -c "$f" | "${mysql[@]}"; echo ;;
+				*.sql.lz4) echo "$0: running $f"; lz4 -d -c "$f" | "${mysql[@]}"; echo ;;
 				*)         echo "$0: ignoring $f" ;;
 			esac
 			echo
