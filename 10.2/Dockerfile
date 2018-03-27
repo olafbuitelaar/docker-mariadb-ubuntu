@@ -73,7 +73,7 @@ RUN echo "deb https://repo.percona.com/apt zesty main" > /etc/apt/sources.list.d
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.2
-ENV MARIADB_VERSION 10.2.13+maria~zesty
+ENV MARIADB_VERSION 10.2.14+maria~zesty
 
 RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu zesty main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
