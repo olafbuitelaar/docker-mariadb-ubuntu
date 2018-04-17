@@ -73,7 +73,7 @@ RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.2
-ENV MARIADB_VERSION 10.2.13+maria~artful
+ENV MARIADB_VERSION 10.2.14+maria~artful
 
 RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu artful main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
@@ -121,7 +121,8 @@ RUN { \
 VOLUME /var/lib/mysql
 
 COPY docker-entrypoint.sh /usr/local/bin/
-RUN ln -s usr/local/bin/docker-entrypoint.sh / # backwards compat
+RUN ln -s usr/local/bin/docker-entrypoint.sh / ; chown mysql.mysql /usr/local/bin/docker-entrypoint.sh # backwards compat
+ 
 ENTRYPOINT ["docker-entrypoint.sh"]
 
 EXPOSE 3306
