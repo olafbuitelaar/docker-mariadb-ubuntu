@@ -73,9 +73,9 @@ RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.3
-ENV MARIADB_VERSION 10.3.6+maria~zesty
+ENV MARIADB_VERSION 10.3.6+maria~artful
 
-RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu zesty main" > /etc/apt/sources.list.d/mariadb.list \
+RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu artful main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
