@@ -1,5 +1,7 @@
 # vim:set ft=dockerfile:
-FROM ubuntu:17.10
+FROM ubuntu:18.04
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 # add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
@@ -13,7 +15,7 @@ RUN set -ex; \
 		wget \
 	'; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends $fetchDeps dirmngr; \
+	apt-get install -y --no-install-recommends $fetchDeps dirmngr gpg gnupg-agent; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -24,7 +26,7 @@ RUN set -ex; \
 	export GNUPGHOME="$(mktemp -d)"; \
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc || true; \
 	\
 	chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
@@ -61,7 +63,7 @@ RUN set -ex; \
 		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$key"; \
 	done; \
 	gpg --export $GPG_KEYS > /etc/apt/trusted.gpg.d/mariadb.gpg; \
-	rm -r "$GNUPGHOME"; \
+	rm -r "$GNUPGHOME" || true; \
 	apt-key list
 
 # add Percona's repo for xtrabackup (which is useful for Galera)
@@ -73,9 +75,9 @@ RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.3
-ENV MARIADB_VERSION 10.3.6+maria~artful
+ENV MARIADB_VERSION 10.3.7+maria~bionic
 
-RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu artful main" > /etc/apt/sources.list.d/mariadb.list \
+RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu bionic main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
 		echo 'Package: *'; \
 		echo 'Pin: release o=MariaDB'; \
@@ -92,11 +94,11 @@ RUN { \
 	} | debconf-set-selections \
 	&& apt-get update \
 	&& apt-get install -y \
-		"mariadb-server=$MARIADB_VERSION" \
+		mariadb-server \
+		mariadb-plugin-rocksdb \
 # percona-xtrabackup is installed at the same time so that `mysql-common` is only installed once from just mariadb repos
 		percona-xtrabackup-24 \
-		mariadb-backup-$MARIADB_MAJOR \
-		"mariadb-plugin-rocksdb=$MARIADB_VERSION" \
+		mariadb-backup \
 		socat \
 		tzdata \
                 pigz \
