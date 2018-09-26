@@ -88,7 +88,7 @@ RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.
 	} > /etc/apt/preferences.d/percona
 
 ENV MARIADB_MAJOR 10.2
-ENV MARIADB_VERSION 10.2.17+maria~bionic
+ENV MARIADB_VERSION 10.2.18+maria~bionic
 
 RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu bionic main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
