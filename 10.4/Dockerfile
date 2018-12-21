@@ -31,7 +31,6 @@ RUN set -ex; \
                             pgp.mit.edu) ; do \ 
         gpg --keyserver "$server" --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 && break || : ; \ 
         done && \ 
-
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
 	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc || true; \
 	\
@@ -87,8 +86,8 @@ RUN echo "deb https://repo.percona.com/apt artful main" > /etc/apt/sources.list.
 		echo 'Pin-Priority: 998'; \
 	} > /etc/apt/preferences.d/percona
 
-ENV MARIADB_MAJOR 10.2
-ENV MARIADB_VERSION 10.2.19+maria~bionic
+ENV MARIADB_MAJOR 10.4
+ENV MARIADB_VERSION 10.4.1+maria~bionic
 
 RUN echo "deb https://mirrors.dotsrc.org/mariadb/repo/$MARIADB_MAJOR/ubuntu bionic main" > /etc/apt/sources.list.d/mariadb.list \
 	&& { \
@@ -111,7 +110,7 @@ RUN { \
 		mariadb-plugin-rocksdb \
 # percona-xtrabackup is installed at the same time so that `mysql-common` is only installed once from just mariadb repos
 		percona-xtrabackup-24 \
-		mariadb-backup-$MARIADB_MAJOR \
+		mariadb-backup \
 		socat \
 		tzdata \
                 pigz \
