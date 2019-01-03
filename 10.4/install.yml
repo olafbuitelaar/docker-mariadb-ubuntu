@@ -1,0 +1,76 @@
+---
+- hosts: localhost
+  become: no
+
+  vars:
+          ansible_connection: local
+          packages:
+                  - percona-xtrabackup-24
+                  - mariadb-backup
+                  - mariadb-plugin-rocksdb 
+                  - mariadb-plugin-cracklib-password-check 
+                  - socat 
+                  - tzdata 
+                  - pigz 
+                  - p7zip-full 
+                  - liblz4-tool
+                  - bzip2
+
+  tasks:
+
+          - name: Pin the Percona repo
+            lineinfile:
+                    path: /etc/apt/preferences.d/percona
+                    line: "{{ item.line }}"
+                    regexp: "{{ item.regexp }}"
+                    create: yes
+            with_items:
+                    - { regexp: '^Package:', line: 'Package: *;' } 
+                    - { regexp: '^Pin:', line: 'Pin: release o=Percona Development Team;' }
+                    - { regexp: '^Pin-Priority:', line: 'Pin-Priority: 998;' }
+            loop_control:
+                    label: "{{ item.line }}"
+
+          - name: Install percona-release_0.1-6.bionic_all.deb
+            apt:
+                    deb: https://www.percona.com/redir/downloads/percona-release/ubuntu/latest/percona-release_0.1-6.bionic_all.deb
+
+          - name: Update all installed packages
+            apt:
+                    name: '*'
+                    state: latest
+                    update_cache: yes
+
+          - name: Install required packages
+            apt:
+                    name: "{{ packages }}"
+                    state: latest
+
+          - name: Change docker-entrypoint.sh to use pigz for gz files
+            lineinfile:
+                    path: /docker-entrypoint.sh
+                    regexp: '\*.sql.gz\).*$'
+                    line: "\t\t\t\t*.sql.gz)  echo \"$0: running $f\"; pigz -c \"$f\" | \"${mysql[@]}\"; echo ;;"
+                    state: present
+
+          - name: Add support for 7zip in docker-entrypoint.sh
+            lineinfile:
+                    path: /docker-entrypoint.sh
+                    regexp: '\*.sql.7z\).*'
+                    line: "\t\t\t\t*.sql.7z)  echo \"$0: running $f\"; 7z e \"$f\" -so | \"${mysql[@]}\"; echo ;;"
+                    insertafter: '\*.sql.gz\).*'
+
+          - name: Add support for lz4 in docker-entrypoint.sh
+            lineinfile:
+                    path: /docker-entrypoint.sh
+                    regexp: '\*.sql.lz4\).*'
+                    line: "\t\t\t\t*.sql.lz4)  echo \"$0: running $f\"; lz4 -d -c \"$f\" | \"${mysql[@]}\"; echo ;;"
+                    insertafter: '\*.sql.7z\).*'
+
+          - name: Add support for bzip2 in docker-entrypoint.sh
+            lineinfile:
+                    path: /docker-entrypoint.sh
+                    regexp: '\*.sql.bz2\).*'
+                    line: "\t\t\t\t*.sql.bz2)  echo \"$0: running $f\"; bunzip2 \"$f\" | \"${mysql[@]}\"; echo ;;"
+                    insertafter: '\*.sql.lz4\).*'
+
