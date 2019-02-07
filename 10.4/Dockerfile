@@ -2,13 +2,13 @@
 FROM mariadb:10.4
 
 ARG PKGS="ansible python-apt aptitude"
-COPY install.yml /install.yml
+COPY install.yml packages.yml /
 
 RUN \
         apt-get update && \
         apt-get -y install $PKGS && \
-        ansible-playbook /install.yml && \
+        ansible-playbook -D /install.yml && \
         apt-get -y purge $PKGS && \
         apt-get -y --purge autoremove && \
         apt-get -y clean && \
-        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /install.yml
+        rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /*.yml

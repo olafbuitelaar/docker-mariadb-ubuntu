@@ -4,22 +4,32 @@
 
   vars:
           ansible_connection: local
-          packages:
-                  - percona-xtrabackup-80
-                  - mariadb-backup-10.2 
-                  - mariadb-plugin-rocksdb 
-                  - mariadb-plugin-cracklib-password-check 
-                  - socat 
-                  - tzdata 
-                  - pigz 
-                  - p7zip-full 
-                  - liblz4-tool
-                  - bzip2
+          percona_release: "percona-release_latest.{{ ansible_lsb.codename }}_all"
 
   tasks:
-          - name: Install percona-release_0.1-6.bionic_all.deb
+          - name: Include variables
+            include_vars: 
+                    file: /packages.yml
+
+          - name: Pin the Percona repo
+            lineinfile:
+                    path: /etc/apt/preferences.d/percona
+                    line: "{{ item.line }}"
+                    regexp: "{{ item.regexp }}"
+                    create: yes
+            with_items:
+                    - { regexp: '^Package:', line: 'Package: *;' } 
+                    - { regexp: '^Pin:', line: 'Pin: release o=Percona Development Team;' }
+                    - { regexp: '^Pin-Priority:', line: 'Pin-Priority: 998;' }
+            loop_control:
+                    label: "{{ item.line }}"
+
+          - name: Install {{ percona_release }}.deb
             apt:
-                    deb: https://www.percona.com/redir/downloads/percona-release/ubuntu/latest/percona-release_0.1-6.bionic_all.deb
+                    deb: "https://repo.percona.com/apt/{{ percona_release }}.deb"
+
+          - name: Enable Percona repo
+            shell: percona-release enable-only tools
 
           - name: Update all installed packages
             apt:
@@ -59,4 +69,5 @@
                     regexp: '\*.sql.bz2\).*'
                     line: "\t\t\t\t*.sql.bz2)  echo \"$0: running $f\"; bunzip2 \"$f\" | \"${mysql[@]}\"; echo ;;"
                     insertafter: '\*.sql.lz4\).*'
+
 

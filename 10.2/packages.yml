@@ -1,0 +1,11 @@
+packages:
+   - percona-xtrabackup-80
+   - mariadb-backup-10.2
+   - mariadb-plugin-rocksdb
+   - mariadb-plugin-cracklib-password-check
+   - socat
+   - tzdata
+   - pigz
+   - p7zip-full
+   - liblz4-tool
+   - bzip2
