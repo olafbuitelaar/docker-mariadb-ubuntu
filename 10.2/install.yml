@@ -5,7 +5,7 @@
   vars:
           ansible_connection: local
           packages:
-                  - percona-xtrabackup-24
+                  - percona-xtrabackup-80
                   - mariadb-backup-10.2 
                   - mariadb-plugin-rocksdb 
                   - mariadb-plugin-cracklib-password-check 
@@ -17,20 +17,6 @@
                   - bzip2
 
   tasks:
-
-          - name: Pin the Percona repo
-            lineinfile:
-                    path: /etc/apt/preferences.d/percona
-                    line: "{{ item.line }}"
-                    regexp: "{{ item.regexp }}"
-                    create: yes
-            with_items:
-                    - { regexp: '^Package:', line: 'Package: *;' } 
-                    - { regexp: '^Pin:', line: 'Pin: release o=Percona Development Team;' }
-                    - { regexp: '^Pin-Priority:', line: 'Pin-Priority: 998;' }
-            loop_control:
-                    label: "{{ item.line }}"
-
           - name: Install percona-release_0.1-6.bionic_all.deb
             apt:
                     deb: https://www.percona.com/redir/downloads/percona-release/ubuntu/latest/percona-release_0.1-6.bionic_all.deb
