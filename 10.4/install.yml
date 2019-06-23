@@ -37,6 +37,14 @@
                     state: latest
                     update_cache: yes
 
+        #   - name: run apt-get update
+        #     shell: apt-get update
+          - name: create dummy systemctl
+            copy: 
+                dest: /usr/bin/systemctl
+                content: "#!/bin/bash"
+                mode: '0775'
+
           - name: Install required packages
             apt:
                     name: "{{ packages }}"
@@ -69,5 +77,27 @@
                     regexp: '\*.sql.bz2\).*'
                     line: "\t\t\t\t*.sql.bz2)  echo \"$0: running $f\"; bunzip2 \"$f\" | \"${mysql[@]}\"; echo ;;"
                     insertafter: '\*.sql.lz4\).*'
+          
+          - name: clean dummy systemctl
+            file:
+                state: absent
+                path: "/usr/bin/systemctl"
+
+          - name: disable cracklib
+            lineinfile:
+                path: /etc/mysql/mariadb.conf.d/cracklib_password_check.cnf
+                regexp: '^(plugin-load-add.*)'
+                line: '#\1'
+                backrefs: yes
+            when: enable_cracklib|default("0")=="0"
 
 
+          - name: disable rocksdb
+            lineinfile:
+                path: /etc/mysql/mariadb.conf.d/rocksdb.cnf
+                regexp: '^(plugin-load-add.*)'
+                line: '#\1'
+                backrefs: yes
+            when: enable_rocksdb|default("0")=="0"
+
+            
